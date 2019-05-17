@@ -210,8 +210,6 @@ func outputAll(symbols []string, flags quoteflags) error {
 	var err error
 	if flags.source == "yahoo" {
 		quotes, err = quote.NewQuotesFromYahooSyms(symbols, from.Format(dateFormat), to.Format(dateFormat), period, flags.adjust)
-	} else if flags.source == "google" {
-		quotes, err = quote.NewQuotesFromGoogleSyms(symbols, from.Format(dateFormat), to.Format(dateFormat), period)
 	}
 	if err != nil {
 		return err
@@ -239,8 +237,6 @@ func outputIndividual(symbols []string, flags quoteflags) error {
 		var q quote.Quote
 		if flags.source == "yahoo" {
 			q, _ = quote.NewQuoteFromYahoo(sym, from.Format(dateFormat), to.Format(dateFormat), period, flags.adjust)
-		} else if flags.source == "google" {
-			q, _ = quote.NewQuoteFromGoogle(sym, from.Format(dateFormat), to.Format(dateFormat), period)
 		}
 		var err error
 		if flags.format == "csv" {
@@ -258,20 +254,6 @@ func outputIndividual(symbols []string, flags quoteflags) error {
 		time.Sleep(quote.Delay * time.Millisecond)
 	}
 	return nil
-}
-
-func handleCommand(cmd string, flags quoteflags) bool {
-	// handle market special commands
-	if !quote.ValidMarket(cmd) {
-		return false
-	}
-	switch cmd {
-	case "etf":
-		quote.NewEtfFile(flags.outfile)
-	default:
-		quote.NewMarketFile(cmd, flags.outfile)
-	}
-	return true
 }
 
 func main() {
@@ -312,11 +294,6 @@ func main() {
 
 	symbols, err = getSymbols(flags, flag.Args())
 	check(err)
-
-	// check for and handled special commands
-	if handleCommand(symbols[0], flags) {
-		os.Exit(0)
-	}
 
 	// main output
 	if flags.all {
