@@ -243,10 +243,6 @@ func outputIndividual(symbols []string, flags quoteflags) error {
 			err = q.WriteCSV(flags.outfile)
 		} else if flags.format == "json" {
 			err = q.WriteJSON(flags.outfile, false)
-		} else if flags.format == "hs" {
-			err = q.WriteHighstock(flags.outfile)
-		} else if flags.format == "ami" {
-			err = q.WriteAmibroker(flags.outfile)
 		}
 		if err != nil {
 			fmt.Printf("Error writing file: %v\n", err)

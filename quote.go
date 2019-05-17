@@ -1,9 +1,4 @@
 /*
-Package quote is free quote downloader library and cli
-
-Downloads daily/weekly/monthly historical price quotes from Yahoo
-and daily/intraday data from Google/Tiingo/Bittrex/Binance
-
 Copyright 2017 Mark Chenoweth
 Licensed under terms of MIT license (see LICENSE)
 */
@@ -117,11 +112,6 @@ func ParseDateString(dt string) time.Time {
 func getPrecision(symbol string) int {
 	var precision int
 	precision = 2
-	if strings.Contains(strings.ToUpper(symbol), "BTC") ||
-		strings.Contains(strings.ToUpper(symbol), "ETH") ||
-		strings.Contains(strings.ToUpper(symbol), "USD") {
-		precision = 8
-	}
 	return precision
 }
 
@@ -140,42 +130,6 @@ func (q Quote) CSV() string {
 	return buffer.String()
 }
 
-// Highstock - convert Quote structure to Highstock json format
-func (q Quote) Highstock() string {
-
-	precision := getPrecision(q.Symbol)
-
-	var buffer bytes.Buffer
-	buffer.WriteString("[\n")
-	for bar := range q.Close {
-		comma := ","
-		if bar == len(q.Close)-1 {
-			comma = ""
-		}
-		str := fmt.Sprintf("[%d,%.*f,%.*f,%.*f,%.*f,%.*f]%s\n",
-			q.Date[bar].UnixNano()/1000000, precision, q.Open[bar], precision, q.High[bar], precision, q.Low[bar], precision, q.Close[bar], precision, q.Volume[bar], comma)
-		buffer.WriteString(str)
-
-	}
-	buffer.WriteString("]\n")
-	return buffer.String()
-}
-
-// Amibroker - convert Quote structure to csv string
-func (q Quote) Amibroker() string {
-
-	precision := getPrecision(q.Symbol)
-
-	var buffer bytes.Buffer
-	buffer.WriteString("date,time,open,high,low,close,volume\n")
-	for bar := range q.Close {
-		str := fmt.Sprintf("%s,%s,%.*f,%.*f,%.*f,%.*f,%.*f\n", q.Date[bar].Format("2006-01-02"), q.Date[bar].Format("15:04"),
-			precision, q.Open[bar], precision, q.High[bar], precision, q.Low[bar], precision, q.Close[bar], precision, q.Volume[bar])
-		buffer.WriteString(str)
-	}
-	return buffer.String()
-}
-
 // WriteCSV - write Quote struct to csv file
 func (q Quote) WriteCSV(filename string) error {
 	if filename == "" {
@@ -186,32 +140,6 @@ func (q Quote) WriteCSV(filename string) error {
 		}
 	}
 	csv := q.CSV()
-	return ioutil.WriteFile(filename, []byte(csv), 0644)
-}
-
-// WriteAmibroker - write Quote struct to csv file
-func (q Quote) WriteAmibroker(filename string) error {
-	if filename == "" {
-		if q.Symbol != "" {
-			filename = q.Symbol + ".csv"
-		} else {
-			filename = "quote.csv"
-		}
-	}
-	csv := q.Amibroker()
-	return ioutil.WriteFile(filename, []byte(csv), 0644)
-}
-
-// WriteHighstock - write Quote struct to Highstock json format
-func (q Quote) WriteHighstock(filename string) error {
-	if filename == "" {
-		if q.Symbol != "" {
-			filename = q.Symbol + ".json"
-		} else {
-			filename = "quote.json"
-		}
-	}
-	csv := q.Highstock()
 	return ioutil.WriteFile(filename, []byte(csv), 0644)
 }
 
