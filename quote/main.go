@@ -18,7 +18,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/stormasm/markcheno-gq"
+	"github.com/stormasm/yhoo-gq1"
 )
 
 var usage = `Usage:
