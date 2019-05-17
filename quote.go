@@ -265,76 +265,12 @@ func (q Quotes) CSV() string {
 	return buffer.String()
 }
 
-// Highstock - convert Quotes structure to Highstock json format
-func (q Quotes) Highstock() string {
-
-	var buffer bytes.Buffer
-
-	buffer.WriteString("{")
-
-	for sym := 0; sym < len(q); sym++ {
-		quote := q[sym]
-		precision := getPrecision(quote.Symbol)
-		for bar := range quote.Close {
-			comma := ","
-			if bar == len(quote.Close)-1 {
-				comma = ""
-			}
-			if bar == 0 {
-				buffer.WriteString(fmt.Sprintf("\"%s\":[\n", quote.Symbol))
-			}
-			str := fmt.Sprintf("[%d,%.*f,%.*f,%.*f,%.*f,%.*f]%s\n",
-				quote.Date[bar].UnixNano()/1000000, precision, quote.Open[bar], precision, quote.High[bar], precision, quote.Low[bar], precision, quote.Close[bar], precision, quote.Volume[bar], comma)
-			buffer.WriteString(str)
-		}
-		if sym < len(q)-1 {
-			buffer.WriteString("],\n")
-		} else {
-			buffer.WriteString("]\n")
-		}
-	}
-
-	buffer.WriteString("}")
-
-	return buffer.String()
-}
-
-// Amibroker - convert Quotes structure to csv string
-func (q Quotes) Amibroker() string {
-
-	var buffer bytes.Buffer
-
-	buffer.WriteString("symbol,date,time,open,high,low,close,volume\n")
-
-	for sym := 0; sym < len(q); sym++ {
-		quote := q[sym]
-		precision := getPrecision(quote.Symbol)
-		for bar := range quote.Close {
-			str := fmt.Sprintf("%s,%s,%s,%.*f,%.*f,%.*f,%.*f,%.*f\n",
-				quote.Symbol, quote.Date[bar].Format("2006-01-02"), quote.Date[bar].Format("15:04"), precision, quote.Open[bar], precision, quote.High[bar], precision, quote.Low[bar], precision, quote.Close[bar], precision, quote.Volume[bar])
-			buffer.WriteString(str)
-		}
-	}
-
-	return buffer.String()
-}
-
 // WriteCSV - write Quotes structure to file
 func (q Quotes) WriteCSV(filename string) error {
 	if filename == "" {
 		filename = "quotes.csv"
 	}
 	csv := q.CSV()
-	ba := []byte(csv)
-	return ioutil.WriteFile(filename, ba, 0644)
-}
-
-// WriteAmibroker - write Quotes structure to file
-func (q Quotes) WriteAmibroker(filename string) error {
-	if filename == "" {
-		filename = "quotes.csv"
-	}
-	csv := q.Amibroker()
 	ba := []byte(csv)
 	return ioutil.WriteFile(filename, ba, 0644)
 }
@@ -397,15 +333,6 @@ func (q Quotes) WriteJSON(filename string, indent bool) error {
 	}
 	jsn := q.JSON(indent)
 	return ioutil.WriteFile(filename, []byte(jsn), 0644)
-}
-
-// WriteHighstock - write Quote struct to json file in Highstock format
-func (q Quotes) WriteHighstock(filename string) error {
-	if filename == "" {
-		filename = "quotes.json"
-	}
-	hc := q.Highstock()
-	return ioutil.WriteFile(filename, []byte(hc), 0644)
 }
 
 // NewQuotesFromJSON - parse json quote string into Quote structure

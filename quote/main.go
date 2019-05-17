@@ -176,10 +176,6 @@ func outputAll(symbols []string, flags quoteflags) error {
 		err = quotes.WriteCSV(flags.outfile)
 	} else if flags.format == "json" {
 		err = quotes.WriteJSON(flags.outfile, false)
-	} else if flags.format == "hs" {
-		err = quotes.WriteHighstock(flags.outfile)
-	} else if flags.format == "ami" {
-		err = quotes.WriteAmibroker(flags.outfile)
 	}
 	return err
 }
