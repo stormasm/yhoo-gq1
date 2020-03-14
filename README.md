@@ -1,4 +1,12 @@
 
+To get up and running with this repo   
+
+```
+go mod init github.com/stormasm/yhoo-gq1
+go get -t
+go run quote/main.go ui
+```
+
 A continuation of code removal starting in this order
 
 Original Code
