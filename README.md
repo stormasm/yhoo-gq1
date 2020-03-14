@@ -15,6 +15,8 @@ Or to install a binary
 cd quote
 go install
 
+quote will now be installed in $HOME/go/bin
+
 Then once quote is installed go to any directory and type
 
 quote ibm
