@@ -9,6 +9,17 @@ go mod init github.com/stormasm/yhoo-gq1
 Otherwise since go.mod is present...
 go get -t
 go run quote/main.go ui
+
+Or to install a binary
+
+cd quote
+go install
+
+Then once quote is installed go to any directory and type
+
+quote ibm
+quote aapl
+quote msft
 ```
 
 A continuation of code removal starting in this order
