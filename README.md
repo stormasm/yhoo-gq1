@@ -2,7 +2,9 @@
 To get up and running with this repo   
 
 ```
+To test how to run a repo without go.mod remove this next line...
 go mod init github.com/stormasm/yhoo-gq1
+
 go get -t
 go run quote/main.go ui
 ```
